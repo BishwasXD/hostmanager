@@ -31,8 +31,12 @@ def block(filepath, site):
 
 
 def unblock(filepath, site):
-    pass
-
+    with open(filepath,  'r') as file:
+        lines = file.readlines()
+    with open(filepath, 'w') as file:
+        for line in lines:
+            if site not in line:
+                file.write(line)
 
 def main():
     if command == "block":
