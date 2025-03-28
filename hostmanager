@@ -1,8 +1,7 @@
+#!/usr/bin/env python3
+import subprocess
 import os
 import sys
-"""
-A cli tool which loops backs the site to local machine my manipulating ect/hosts
-"""
 
 filepath = '/etc/hosts'
 
@@ -18,7 +17,7 @@ if os.getuid() != 0:
 
 
 def block(filepath, site):
-    write_this = f"\n 127.0.0.1 www.{site}.com"
+    write_this = f"\n127.0.0.1 www.{site}.com"
     try:
         with open(filepath, 'a') as file:
             file.write(write_this)
@@ -38,6 +37,13 @@ def unblock(filepath, site):
             if site not in line:
                 file.write(line)
 
+
+def refresh():
+    subprocess.run(["sudo", "systemctl", "restart", "nscd"], check=True)
+    subprocess.run(["sudo", "systemctl", "restart",
+                   "systemd-resolved"], check=True)
+
+
 def main():
     if command == "block":
         block(filepath, site)
@@ -47,6 +53,8 @@ def main():
 
     else:
         print("Command not recognized")
+
+    refresh()
 
 
 if __name__ == "__main__":
